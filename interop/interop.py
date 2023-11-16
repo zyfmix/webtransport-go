@@ -21,15 +21,15 @@ options.binary_location = chrome_loc
 options.add_argument("--no-sandbox")
 options.add_argument("--enable-quic")
 options.add_argument("--headless")
-options.add_argument("--origin-to-force-quic-on=localhost:12345")
-options.add_argument("--host-resolver-rules='MAP localhost:12345 127.0.0.1:12345'")
+options.add_argument("--origin-to-force-quic-on=localhost:8443")
+options.add_argument("--host-resolver-rules='MAP localhost:8443 127.0.0.1:8443'")
 options.set_capability("goog:loggingPrefs", {"browser": "ALL"})
 
 driver = webdriver.Chrome(
     service=Service(ChromeDriverManager().install()),
     options=options,
 )
-driver.get("http://localhost:8080/webtransport")
+driver.get("https://brtc-pslocal.baijiayun.com:8080/webtransport")
 
 delay = 5
 failed = False

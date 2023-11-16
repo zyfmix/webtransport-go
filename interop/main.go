@@ -44,12 +44,14 @@ func main() {
 
 	go runHTTPServer(hash)
 
+	//tlsConf = generateTLSConfig("data/certs/baijiayun.com.crt", "data/certs/baijiayun.com.key")
+
 	wmux := http.NewServeMux()
 	s := webtransport.Server{
 		H3: http3.Server{
-			TLSConfig: tlsConf,
-			Addr:      "localhost:12345",
-			Handler:   wmux,
+			//TLSConfig: tlsConf,
+			Addr:    ":8443",
+			Handler: wmux,
 		},
 		CheckOrigin: func(r *http.Request) bool { return true },
 	}
@@ -64,7 +66,7 @@ func main() {
 		}
 		runUnidirectionalTest(conn)
 	})
-	if err := s.ListenAndServe(); err != nil {
+	if err := s.ListenAndServeTLS("data/certs/baijiayun.com.crt", "data/certs/baijiayun.com.key"); err != nil {
 		log.Fatal(err)
 	}
 }
@@ -78,7 +80,7 @@ func runHTTPServer(certHash [32]byte) {
 		content = strings.ReplaceAll(content, "%%TEST%%", "unidirectional")
 		w.Write([]byte(content))
 	})
-	http.ListenAndServe("localhost:8080", mux)
+	http.ListenAndServeTLS(":8080", "data/certs/baijiayun.com.crt", "data/certs/baijiayun.com.key", mux)
 }
 
 func runUnidirectionalTest(sess *webtransport.Session) {
@@ -158,4 +160,15 @@ func formatByteSlice(b []byte) string {
 	s := strings.ReplaceAll(fmt.Sprintf("%#v", b[:]), "[]byte{", "[")
 	s = strings.ReplaceAll(s, "}", "]")
 	return s
+}
+
+func generateTLSConfig(tlsCertPath string, keyCertPath string) *tls.Config {
+	cert, err := tls.LoadX509KeyPair(tlsCertPath, keyCertPath)
+	if err != nil {
+		log.Fatal(err)
+	}
+	return &tls.Config{
+		Certificates: []tls.Certificate{cert},
+		NextProtos:   []string{"h3", "h3-32", "h3-31", "h3-30", "h3-29"},
+	}
 }

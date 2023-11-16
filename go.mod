@@ -4,7 +4,7 @@ go 1.20
 
 require (
 	github.com/quic-go/quic-go v0.39.0
-	github.com/stretchr/testify v1.8.0
+	github.com/stretchr/testify v1.8.4
 	go.uber.org/mock v0.3.0
 )
 

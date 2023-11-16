@@ -8,12 +8,14 @@ function testSucceeded() {
 }
 
 async function establishSession(url) {
-    const transport = new WebTransport(url, {
-        "serverCertificateHashes": [{
-            "algorithm": "sha-256",
-            "value": new Uint8Array(%%CERTHASH%%)
-        }]
-    });
+    // const transport = new WebTransport(url, {
+    //     "serverCertificateHashes": [{
+    //         "algorithm": "sha-256",
+    //         "value": new Uint8Array(%%CERTHASH%%)
+    //     }]
+    // });
+
+    const transport = new WebTransport(url);
 
     // Optionally, set up functions to respond to
     // the connection closing:
@@ -30,7 +32,8 @@ async function establishSession(url) {
 
 // In this test, we open 5 unidirectional streams, and send the data back to the server.
 async function runUnidirectionalTest() {
-    const transport = await establishSession('https://127.0.0.1:12345/unidirectional');
+    const transport = await establishSession('https://brtc-pslocal.baijiayun.com:8443/unidirectional');
+    // const transport = await establishSession('https://brtc-psdev.baijiayun.com:8443/unidirectional');
     const data = new Uint8Array(%%DATA%%);
 
     let failed = false
